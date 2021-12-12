@@ -36,7 +36,7 @@ else {
     await lib.discord.channels['@0.0.6'].messages.create({
           channel_id: `${context.params.event.channel_id}`,
           content: [
-          `Vous trouverez ${keyword} dans:`,
+          `@!${context.params.event.member.user.id}> : vous trouverez ${keyword} dans:`,
           `${recherche}`,
           '___'
           ].join('\n')
