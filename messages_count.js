@@ -32,5 +32,5 @@ while (messageslistlength === 100) {
 // make API request
 let result = await lib.discord.channels['@0.2.2'].messages.create({
   channel_id: `${context.params.event.channel_id}`,
-  content: `Il y a sur ce fil ${messagecounter} messages.`
+  content: `<@!${context.params.event.member.user.id}> : il y a sur ce fil ${messagecounter} messages.`
 });
