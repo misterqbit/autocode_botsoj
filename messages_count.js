@@ -3,10 +3,6 @@
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 // make API request
-let typingindicator = await lib.discord.channels['@0.2.2'].typing.create({
-  channel_id: `${context.params.event.channel_id}`
-});
-
 let messageslist = await lib.discord.channels['@0.2.2'].messages.list({
   channel_id: `${context.params.event.channel_id}`,
   limit: 1
