@@ -14,10 +14,16 @@ let messageslistlength = 100;
 let messagecounter = 1;
 let whileloopcounter = 0;
 
+let sleep = async (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+};
 
 //While loop execute
 while (messageslistlength === 100) {
     whileloopcounter = whileloopcounter + 1;
+    await sleep(840);    
     //Retrieve the 100max messages
     messageslist = await lib.discord.channels['@0.2.2'].messages.list({
       channel_id: `${context.params.event.channel_id}`,
