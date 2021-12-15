@@ -21,9 +21,9 @@ let sleep = async (ms) => {
 };
 
 //While loop execute
-while (messageslistlength === 100) {
+while (messageslistlength === 100 && messagecounter < 2500) {
     whileloopcounter = whileloopcounter + 1;
-    await sleep(840);    
+    await sleep(630);    
     //Retrieve the 100max messages
     messageslist = await lib.discord.channels['@0.2.2'].messages.list({
       channel_id: `${context.params.event.channel_id}`,
@@ -31,12 +31,21 @@ while (messageslistlength === 100) {
       limit: 100
     });
     messagecounter = messagecounter + messageslist.length;
+    console.log(messagecounter);
     //While loop readjust
     messageslistlength = messageslist.length;
     latestmessageID = `${messageslist[(messageslistlength-1)].id}`;
 }
-// make API request
-let result = await lib.discord.channels['@0.2.2'].messages.create({
-  channel_id: `${context.params.event.channel_id}`,
-  content: `<@!${context.params.event.member.user.id}> : il y a sur ce fil ${messagecounter} messages.`
-});
+
+if (messagecounter > 2499){
+  let result = await lib.discord.channels['@0.2.2'].messages.create({
+    channel_id: `${context.params.event.channel_id}`,
+    content: `<@!${context.params.event.member.user.id}> : il y a sur ce fil plus de 2500 messages.`
+  });
+}
+else {
+  let result = await lib.discord.channels['@0.2.2'].messages.create({
+    channel_id: `${context.params.event.channel_id}`,
+    content: `<@!${context.params.event.member.user.id}> : il y a sur ce fil ${messagecounter} messages.`
+  });
+}
