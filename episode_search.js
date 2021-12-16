@@ -18,11 +18,11 @@ let result = await lib.googlesheets.query['@0.3.0'].select({
         'offset': 0
       },
 });
-    
+
 if (result.rows[0] == null) {
       await lib.discord.channels['@0.0.6'].messages.create({
         channel_id: context.params.event.channel_id,
-        content: `@${context.params.event.author.username} : pas de résultat`
+        content: `<@!${context.params.event.member.user.id}> : pas de résultat`
       });
 } 
 else {
@@ -36,7 +36,7 @@ else {
     await lib.discord.channels['@0.0.6'].messages.create({
           channel_id: `${context.params.event.channel_id}`,
           content: [
-          `@!${context.params.event.member.user.id}> : vous trouverez ${keyword} dans:`,
+          `<@!${context.params.event.member.user.id}> : vous trouverez ${keyword} dans:`,
           `${recherche}`,
           '___'
           ].join('\n')
