@@ -52,14 +52,15 @@ if (magazine == 'tilt'){
   }
   else {
       let recherche = [];
-      let urlTilt;
+//      let urlTilt;
       for (let i = 0; i < result.rows.length; i++) {
           recherche.push(`\n${result.rows[i].fields.Titre}`);
           recherche.push(` sur ${result.rows[i].fields.Machine}`); 
           recherche.push(` dans un article du Tilt n° ${result.rows[i].fields.Numero}`); 
           recherche.push(` en ${result.rows[i].fields.Dates}`);
-          urlTilt = encodeURI(result.rows[i].fields.Lien); 
-          recherche.push(` ${urlTilt}`); 
+//          urlTilt = encodeURI(result.rows[i].fields.Lien); 
+//          recherche.push(` ${urlTilt}`);
+          recherche.push(` ${result.rows[i].fields.Lien}`); 
       } 
       await lib.discord.channels['@0.0.6'].messages.create({
             channel_id: `${context.params.event.channel_id}`,
