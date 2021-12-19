@@ -31,7 +31,7 @@ if (magazine == 'tilt'){
         }
         else {
           result.rows.splice(j,1);
-          j=0;
+          j=-1;
         }
       }
     }
@@ -95,7 +95,7 @@ else {
         }
         else {
           result.rows.splice(j,1);
-          j=0;
+          j=-1;
         }
       }
     }
