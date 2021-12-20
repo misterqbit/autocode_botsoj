@@ -53,7 +53,7 @@ if (magazine == 'tilt'){
           content: `@${context.params.event.member.user.username} : désolé, pas de résultat pour "${game}" dans Tilt.`
         });
   } 
-  else if (result.rows.length > 10) {
+  else if (result.rows.length > 9) {
     await lib.discord.channels['@0.0.6'].messages.create({
       channel_id: context.params.event.channel_id,
       content: `@${context.params.event.member.user.username} : trop de résultats pour "${game}" dans Tilt, veuillez affiner votre recherche, merci.`
@@ -118,7 +118,7 @@ else {
           content: `@${context.params.event.member.user.username} : désolé, pas de résultat pour "${game}" dans Génération 4.`
         });
   } 
-  else if (result.rows.length > 10) {
+  else if (result.rows.length > 9) {
     await lib.discord.channels['@0.0.6'].messages.create({
       channel_id: context.params.event.channel_id,
       content: `@${context.params.event.member.user.username} : trop de résultats pour "${game}" dans Génération 4, veuillez affiner votre recherche, merci.`
