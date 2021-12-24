@@ -1,0 +1,12 @@
+// authenticates you with the API standard library
+// type `await lib.` to display API autocomplete
+const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
+
+
+
+await lib.discord.users['@0.2.0'].dms.create({
+  recipient_id: `${context.params.event.user.id}`,
+  content: `Bonjour ${context.params.event.user.username}, bienvenue sur Silence On Joue! N'hésitez pas à participer!! Allez voter - chaque voix compte! - jusqu'au 25/12 sur l'espace VOTES GOTY 2021. Réagissez aux épisodes de SoJ sur l'espace LE PODCAST. Commentez votre passion pour la chose ludique sur l'espace LES JEUX. Partagez vos avis et vos envies non ludiques sur l'espace BLA BLA. Parcourez les salons de chacun de ces espaces. Soyez curieux! Explorez les fils existants dans ces salons, désarchivez-les, créez vos fils si vous sentez une thématique, la plupart s'effilochent et ce n'est pas grave :) Essayez de débuter un message par /, un choix de commandes apparaitra. Des doutes techniques sur cette app discord? Venez sur le salon #tuto-discord `
+});
+
+console.log (`Welcome message sent to ${context.params.event.user.username}`)
