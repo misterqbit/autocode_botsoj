@@ -2,7 +2,7 @@
 // type `await lib.` to display API autocomplete
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
-if (context.params.event.channel_id == '924418145098289203') {
+if (context.params.event.channel_id == '928370783603028018') {
   
     function getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -66,6 +66,6 @@ if (context.params.event.channel_id == '924418145098289203') {
 else {
   let result = await lib.discord.channels['@0.3.0'].messages.create({
     channel_id: context.params.event.channel_id,
-    content: `<@!${context.params.event.member.user.id}> : Cette commande n'est permise que dans le fil Deaf Test CPC Infinite`
+    content: `<@!${context.params.event.member.user.id}> : Cette commande n'est permise que dans le fil Deaf Test CPC Infinite : https://discord.com/channels/342731229315072000/928370783603028018`
   });
 }
