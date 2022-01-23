@@ -12,13 +12,16 @@ let result = await lib.discord.channels['@0.0.6'].messages.retrieve({
   channel_id: `${context.params.event.channel_id}`
 });
 
+let hour = result.timestamp.substring(11,100);
+hour = hour.substring(0,15);
+
 await lib.discord.channels['@0.0.6'].messages.create({
   channel_id: context.params.event.channel_id,
   content: [
     `<@${context.params.event.member.user.id}> :`,
 //    `>>> Message ID : ${messageID}`,
-    `>>> Le message "${result.content}" de ${result.author.username} a été posté exactement à ${result.timestamp}`,
+    `>>> Le message "${result.content}" de ${result.author.username} a été posté exactement à ${hour}`,
   ].join('\n'),
-  tts : true
+  tts : false
   
 });
