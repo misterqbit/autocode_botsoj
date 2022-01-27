@@ -144,7 +144,7 @@ else{
               channel_id: `${context.params.event.channel_id}`,
               content: [
                 `<@${context.params.event.member.user.id}> : Votre progression est de : ${progress}%.`,
-                `Vous avez trouvé tous les secrets de ce voyage dans les univers de SRAM, Pharaon, La Secte Noire, La Chose de Grotemburg et le Passager du Temps!`
+                `Bravo! Vous avez trouvé tous les secrets de ce voyage dans les univers de SRAM, Pharaon, La Secte Noire, La Chose de Grotemburg et le Passager du Temps!`
               ].join('\n'),
               embeds: [
                 {
