@@ -108,10 +108,13 @@ if (
   })[0].test_last_message_id;
 }
 
-// Collect all messages since last seen
+// Collect messages since last seen
 let keep_collecting = true;
+let collcect_counter = 0
+let collect_loop_limit = 5
 let full_list = [];
-while (keep_collecting) {
+while (keep_collecting && collect_counter < collect_loop_limit) {
+  collect_counter = collect_counter + 1
   let message_list = await lib.discord.channels['@0.3.0'].messages.list({
     channel_id: channel_id,
     after: test_last_message_id,
