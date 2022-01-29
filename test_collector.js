@@ -110,8 +110,8 @@ if (
 
 // Collect messages since last seen
 let keep_collecting = true;
-let collcect_counter = 0
-let collect_loop_limit = 5
+let collect_counter = 0;
+let collect_loop_limit = 5;
 let full_list = [];
 while (keep_collecting && collect_counter < collect_loop_limit) {
   collect_counter = collect_counter + 1
