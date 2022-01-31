@@ -47,27 +47,24 @@ async function InsertInSheet(range, fieldsets) {
   });
 }
 
-async function SendMessage(type) {
-  let content
-  if (type == 'NoDeal') {
-    content= "Ce canal n'est pas un test, je ne vais donc rien collecter."
-    } else if(type == 'Start') {
-      content= 'Je commence la collecte, merci de patienter.'
-    } else if (type == 'Finish') {
-      content= "J'ai fini ma collecte. A bientôt !"
-    }
+async function SendMessage(content) {
   await lib.discord.channels['@0.3.0'].messages.create({
     channel_id: channel_id,
     content: content,
   });
 }
 
+//Messages
+const exec_none = "Ce canal n'est pas un test, je ne vais donc rien collecter.";
+const exec_begin = 'Je commence la collecte, merci de patienter.';
+const exec_end = "J'ai fini ma collecte. A bientôt !";
+
 // Range names
-channel_range = 'channel';
-user_range = 'user';
-game_range = 'test_game';
-sample_range = 'test_sample';
-answer_range = 'test_answer';
+const channel_range = 'channel';
+const user_range = 'user';
+const game_range = 'test_game';
+const sample_range = 'test_sample';
+const answer_range = 'test_answer';
 
 // Get channel table and check if channel is test
 channel_array = await GetSheetData(channel_range);
@@ -75,15 +72,18 @@ if (
   channel_array.length == 0 ||
   !channel_array.some((channel) => channel.channel_id == channel_id) ||
   channel_array.filter((channel) => {
-      return channel.channel_id == channel_id;
-    })[0].is_test != 1
-  ) {
-  await SendMessage('NoDeal')
+    return channel.channel_id == channel_id;
+  })[0].is_test != 1
+) {
+  await SendMessage(exec_none);
   return 0;
 }
 
-await SendMessage('Start')
-
+await SendMessage(exec_begin);
+const test_as_text =
+  channel_array.filter((channel) => {
+    return channel.channel_id == channel_id;
+  })[0].test_as_text == 1;
 
 // Get other tables
 user_array = await GetSheetData(user_range);
@@ -114,7 +114,7 @@ let collect_counter = 0;
 let collect_loop_limit = 5;
 let full_list = [];
 while (keep_collecting && collect_counter < collect_loop_limit) {
-  collect_counter = collect_counter + 1
+  collect_counter = collect_counter + 1;
   let message_list = await lib.discord.channels['@0.3.0'].messages.list({
     channel_id: channel_id,
     after: test_last_message_id,
@@ -268,7 +268,15 @@ if (short_list.length > 0) {
     }
 
     // Log sample info for each sample
-    if (has_samples) {
+    if (has_samples && test_as_text){
+      sample_id = sample_id + 1;
+      sample_array.push({
+        sample_id: sample_id,
+        game_id: game_id,
+        sample_name: message.content
+      });
+    }
+    else if (has_samples && !test_as_text) {
       for (attachment of message.attachments) {
         sample_id = sample_id + 1;
         sample_array.push({
@@ -310,7 +318,7 @@ await InsertInSheet(sample_range, sample_array);
 await InsertInSheet(user_range, user_array);
 
 // End of process message
-await SendMessage('Finish')
+await SendMessage(exec_end);
 
 // Success code
 return 1;
