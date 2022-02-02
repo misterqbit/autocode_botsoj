@@ -28,8 +28,8 @@ async function GetSheetData(range) {
   return fieldsets;
 }
 
-async function CleanSheet(range) {
-  await lib.googlesheets.query['@0.3.0'].delete({
+async function CountSheetRows(range) {
+  let sheet_data = await lib.googlesheets.query['@0.3.0'].count({
     range: range,
     bounds: 'FIRST_EMPTY_ROW',
     where: [{}],
@@ -38,6 +38,7 @@ async function CleanSheet(range) {
       offset: 0,
     },
   });
+  return sheet_data.count;
 }
 
 async function InsertInSheet(range, fieldsets) {
@@ -57,7 +58,6 @@ async function SendMessage(content) {
 //Messages
 const exec_none = "Ce canal n'est pas un test, je ne vais donc rien collecter.";
 const exec_begin = 'Je commence la collecte, merci de patienter.';
-const exec_end = "J'ai fini ma collecte. A bientôt !";
 
 // Range names
 const channel_range = 'channel';
@@ -85,28 +85,10 @@ const test_as_text =
     return channel.channel_id == channel_id;
   })[0].test_as_text == 1;
 
-// Get other tables
-user_array = await GetSheetData(user_range);
-game_array = await GetSheetData(game_range);
-sample_array = await GetSheetData(sample_range);
-answer_array = await GetSheetData(answer_range);
-
 // Get last message id
-let test_last_message_id = '0';
-if (
-  channel_array.length == 0 ||
-  !channel_array.some((channel) => channel.channel_id == channel_id)
-) {
-  channel_array.push({
-    channel_id: channel_id,
-    channel_name: channel_name,
-    test_last_message_id: test_last_message_id,
-  });
-} else {
-  test_last_message_id = channel_array.filter((channel) => {
-    return channel.channel_id == channel_id;
-  })[0].test_last_message_id;
-}
+let test_last_message_id = channel_array.filter((channel) => {
+  return channel.channel_id == channel_id;
+})[0].test_last_message_id;
 
 // Collect messages since last seen
 let keep_collecting = true;
@@ -169,28 +151,34 @@ if (short_list.length > 0) {
     }
   }
 
-  // Update last message seen
-  channel_array = channel_array.map((channel) => {
-    if (channel.channel_id == channel_id) {
-      return {...channel, test_last_message_id: test_last_message_id};
-    }
-    return channel;
-  });
-
   // Shorten the short list if necessary
   short_list = short_list.filter(function (message) {
     return message.id <= test_last_message_id;
   });
 }
 
-let game_id = game_array.length;
-let sample_id = sample_array.length;
-let last_answer_id = answer_array.length;
-let answer_id = last_answer_id;
+
+let user_array_new = [];
+let game_array_new = [];
+let sample_array_new = [];
+let answer_array_new = [];
+
 
 // If we still have messages in the short list, we need to update the sheet
 if (short_list.length > 0) {
   short_list.reverse();
+
+  // Get other tables
+  user_array = await GetSheetData(user_range);
+  answer_array = await GetSheetData(answer_range);
+
+  // Get last IDs for each table
+  let game_id = await CountSheetRows(game_range);
+  let sample_id = await CountSheetRows(sample_range);
+  let last_answer_id = answer_array.length;
+  let answer_id = last_answer_id;
+
+  let game_row = -1;
 
   let new_game;
   let has_samples;
@@ -225,8 +213,9 @@ if (short_list.length > 0) {
 
     // Create new game row
     if (new_game) {
-      game_id = game_id + 1;
-      game_array.push({
+      game_id ++;
+      game_row ++;
+      game_array_new.push({
         game_id: game_id,
         channel_id: channel_id,
         game_master_id: message.author.id,
@@ -237,49 +226,52 @@ if (short_list.length > 0) {
 
     // insert answer
     if (is_answer) {
-      if (
+      let not_in_old =
         answer_array.length == 0 ||
-        !answer_array.some((answer) => answer.answer_string == message.content)
-      ) {
+        !answer_array.some((answer) => answer.answer_string == message.content);
+      let not_in_new =
+        answer_array_new.length == 0 ||
+        !answer_array_new.some(
+          (answer) => answer.answer_string == message.content
+        );
+      if (not_in_old && not_in_new) {
         answer_id = last_answer_id + 1;
         last_answer_id = answer_id;
-        answer_array.push({
+        answer_array_new.push({
           answer_id: answer_id,
           answer_string: message.content,
         });
-      } else {
+      } else if (!not_in_old) {
         answer_id = answer_array.filter((answer) => {
+          return answer.answer_string == message.content;
+        })[0].answer_id;
+      } else if (!not_in_new) {
+        answer_id = answer_array_new.filter((answer) => {
           return answer.answer_string == message.content;
         })[0].answer_id;
       }
       // Update game row to add answer
-      game_array = game_array.map((game) => {
-        if (game.game_id == game_id) {
-          return {
-            ...game,
-            winner_id: message.author.id,
-            winning_datetime: message.timestamp,
-            answer_id: answer_id,
-            answer_message_id: message.id,
-          };
-        }
-        return game;
-      });
+      game_array_new[game_row] = {
+        ...game_array_new[game_row],
+        winner_id: message.author.id,
+        winning_datetime: message.timestamp,
+        answer_id: answer_id,
+        answer_message_id: message.id,
+      };
     }
 
     // Log sample info for each sample
-    if (has_samples && test_as_text){
-      sample_id = sample_id + 1;
-      sample_array.push({
+    if (has_samples && test_as_text) {
+      sample_id ++;
+      sample_array_new.push({
         sample_id: sample_id,
         game_id: game_id,
-        sample_name: message.content
+        sample_name: message.content,
       });
-    }
-    else if (has_samples && !test_as_text) {
+    } else if (has_samples && !test_as_text) {
       for (attachment of message.attachments) {
-        sample_id = sample_id + 1;
-        sample_array.push({
+        sample_id ++;
+        sample_array_new.push({
           sample_id: sample_id,
           game_id: game_id,
           sample_name: attachment.filename,
@@ -291,33 +283,54 @@ if (short_list.length > 0) {
     // Check user in list
     if (check_user) {
       if (
-        user_array.length == 0 ||
-        !user_array.some((user) => user.user_id == message.author.id)
+        (user_array.length == 0 ||
+          !user_array.some((user) => user.user_id == message.author.id)) &&
+        (user_array_new.length == 0 ||
+          !user_array_new.some((user) => user.user_id == message.author.id))
       ) {
-        user_array.push({
+        user_array_new.push({
           user_id: message.author.id,
           user_name_discord: message.author.username,
         });
       }
     }
   }
+
+  // Update channel sheet
+  await lib.googlesheets.query['@0.3.0'].update({
+    range: channel_range,
+    bounds: 'FIRST_EMPTY_ROW',
+    where: [
+      {
+        channel_id__is: channel_id,
+      },
+    ],
+    limit: {
+      count: 0,
+      offset: 0,
+    },
+    fields: {
+      test_last_message_id: test_last_message_id,
+    },
+  });
+
+  // Insert new data
+  await InsertInSheet(game_range, game_array_new);
+  await InsertInSheet(answer_range, answer_array_new);
+  await InsertInSheet(sample_range, sample_array_new);
+  await InsertInSheet(user_range, user_array_new);
 }
 
-// Clear all sheets on Google sheet
-await CleanSheet(channel_range);
-await CleanSheet(game_range);
-await CleanSheet(answer_range);
-await CleanSheet(sample_range);
-await CleanSheet(user_range);
-
-// Insert new data
-await InsertInSheet(channel_range, channel_array);
-await InsertInSheet(game_range, game_array);
-await InsertInSheet(answer_range, answer_array);
-await InsertInSheet(sample_range, sample_array);
-await InsertInSheet(user_range, user_array);
-
 // End of process message
+const exec_end =
+  "J'ai fini ma collecte.\n\n" +
+  'Nouvelles parties: ' + game_array_new.length +'\n' +
+  'Nouveaux extraits: ' + sample_array_new.length + '\n' +
+  'Nouveaux joueurs: ' + user_array_new.length + '\n' +
+  'Le prochain relevé démarrera ici : '+
+  'https://discord.com/channels/342731229315072000/' + channel_id +
+  '/' + test_last_message_id + "\n\n" +
+  'A bientôt !';
 await SendMessage(exec_end);
 
 // Success code
