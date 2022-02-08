@@ -2,7 +2,7 @@
 // type `await lib.` to display API autocomplete
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
-if (context.params.event.channel_id == '940708499598491689') {
+if (context.params.event.channel_id == '940724611383980033') {
 
 
       let text = []; // recueillera l'assemblage du texte affiché dans le message
@@ -17,10 +17,14 @@ if (context.params.event.channel_id == '940708499598491689') {
         guild_id: `342731229315072000`
       });
 
-      //console.log(channels_list);
+ //    console.log(channelsList);
 
       for (let i = 0; i < channelsList.length; i++) {
-        if (channelsList[i].type === 0) { // type 0 = on ne considère que les salons texte
+//console.log(i);
+//console.log(channelsList[i].id);
+//console.log(channelsList[i].permission_overwrites);
+//console.log(channelsList[i].permission_overwrites.length);
+        if ((channelsList[i].type === 0)&&((channelsList[i].permission_overwrites.length === 1)||(channelsList[i].permission_overwrites.length === 0))) { // type 0 = on ne considère que les salons texte
 
           // On récupère la liste des fils actifs du salon en cours
           let threadsList = await lib.discord.channels['@0.2.2'].threads.list({
@@ -43,14 +47,20 @@ if (context.params.event.channel_id == '940708499598491689') {
         text.push('Aucun fil actif trouvé sur ce serveur !');
       }
 
-      await lib.discord.channels['@0.0.6'].messages.create({
+     /* await lib.discord.channels['@0.0.6'].messages.create({
         channel_id:  `${context.params.event.channel_id}`,
+        content: text.join('\n')
+      });*/
+      await lib.discord.channels['@0.3.0'].messages.update({
+        message_id: `940725307613249597`,
+        channel_id: `940724611383980033`,
         content: text.join('\n')
       });
 }
+
 else {
   await lib.discord.channels['@0.3.0'].messages.create({
     channel_id: context.params.event.channel_id,
-    content: `<@!${context.params.event.member.user.id}> : Cette commande est en cours de test dans le fil <#commande silence_on_discute> du salon du robot`
+    content: `<@!${context.params.event.member.user.id}> : Cette commande est en cours de test dans le salon du robot`
   });
 }
