@@ -15,8 +15,9 @@ await lib.discord.channels['@0.2.0'].messages.create({
   `<@!${context.params.event.member.user.id}> : les fils actifs sont:`,
   "tts": false,
 });
+console.log(channels_list);
 
-for (let i = 2; i < channels_list.length; i++) {
+for (let i = 0; i < channels_list.length; i++) {
 
     if (channels_list[i].type != 0) {
       
@@ -28,7 +29,8 @@ for (let i = 2; i < channels_list.length; i++) {
         });
 
         for (let j = 0; j < result.threads.length; j++) {
-          fils[j] = `\n` + '#' + channels_list[i].name + '  >  #' + result.threads[j].name + `\n`;
+//          fils[j] = `\n` + '#' + channels_list[i].name + '  >  #' + result.threads[j].name + `\n`;
+            fils[j] = '<' + '#' + channels_list[i].id + '>' + '  > ' + '<' + '#' + result.threads[j].id + '>' + `\n`;
           }
 
        if ((result.threads.length != 0)&&(fils.length != 0)) {
