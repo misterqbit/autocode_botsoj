@@ -2,22 +2,25 @@
 // type `await lib.` to display API autocomplete
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
-if (context.params.event.channel_id == '940724611383980033') {
+//if (context.params.event.channel_id == '940724611383980033') {
 
 
       let text = []; // recueillera l'assemblage du texte affiché dans le message
       let hasOneResult = false; // permet de savoir s'il y a au moins un fil qui a été repéré dans les résultats
 
+      let now = new Date();
+      let paris_datetime_str = now.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
+
       // On assemble le début du texte de réponse
-      text.push(`Voici la liste des fils actifs sur ce serveur Discord :`);
-      text.push(` `);
+            text.push(`Au ${paris_datetime_str} (heure de Paris), voici la liste des fils actifs sur ce serveur Discord :`);
+            text.push(` `);
 
       // make API request
       let channelsList = await lib.discord.guilds['@0.2.2'].channels.list({
         guild_id: `342731229315072000`
       });
 
- //    console.log(channelsList);
+     console.log(channelsList);
 
       for (let i = 0; i < channelsList.length; i++) {
 //console.log(i);
@@ -56,11 +59,11 @@ if (context.params.event.channel_id == '940724611383980033') {
         channel_id: `940724611383980033`,
         content: text.join('\n')
       });
-}
+/*}
 
 else {
   await lib.discord.channels['@0.3.0'].messages.create({
     channel_id: context.params.event.channel_id,
     content: `<@!${context.params.event.member.user.id}> : Cette commande est en cours de test dans le salon du robot`
   });
-}
+}*/
