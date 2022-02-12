@@ -59,9 +59,26 @@ async function DeleteMessage(messageId) {
 
           // Pour chaque fil, on ajoute une ligne salon > fil dans le texte
           for (let j = 0; j < threadsList.threads.length; j++) {
+            // on part de la date actuelle
+            let maintenant = new Date();
+            // on en fait un entier l'exprimant en millisecondes écoulées depuis de 1er janvier 1970
+            let maintenantNB = maintenant.getTime();
+            // les ID discord sont, exprimé en décimal, un binaire de 64 bits, la date de création étant contenue dans les bits 22 à 63, en millisecondes écoulées depuis la première seconde de 2015
+            let threadID = threadsList.threads[j].id;
+            // on divise l'ID par 2^22 pour faire passer les bits 0 à 21 après la virgule et récupérer la date de création, puis on l'ajoute à la date du 1er janvier 2015 (en millisecondes écoulées depuis le 1er janvier 1970)
+            let timestampNB = threadID / 4194304 + 1420070400000;
+            // on soustrait la date de création à la date actuelle, et on vérifie qu'elle soit inférieure à 3 jours (en millisecondes)
+            //let nouveau;
+            if ((maintenantNB - timestampNB) < 3*24*60*60*1000) {
+              var nouveau = ' :new:';
+            }
+            else {
+              var nouveau = ' ';
+            }
+            
             hasOneResult = true;
 //            text.push('<' + '#' + channelsList[i].id + '>' + '  > ' + '<' + '#' + threadsList.threads[j].id + '>');
-            text.push('> ' + '<' + '#' + threadsList.threads[j].id + '>');
+            text.push('> ' + '<' + '#' + threadsList.threads[j].id + '>' + nouveau);
             if (j === threadsList.threads.length - 1) {
               text.push(' '); // Séparateur entre chaque salon
             }
