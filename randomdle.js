@@ -17,16 +17,38 @@ let squareColorNbr;
 line.push('Randomdle     ' + '#' + `${wordleDay}     ` + `${wordleAttempts}` + '/7' + '\n' + '\n');
 for (j=0; j<wordleHeight; j++) {
   for (i=0; i<wordleWidth; i++) {
-    squareColorNbr = getRandomInt(1,3);
+    squareColorNbr = getRandomInt(1,10);
     if (squareColorNbr == 1) {
       line.push(`:green_square:`);
     }
     else if (squareColorNbr == 2) {
-      line.push(`:orange_square:`);
+      line.push(`:green_square:`);
     }
     else if (squareColorNbr == 3) {
+    line.push(`:orange_square:`);
+    }
+    else if (squareColorNbr == 4) {
+      line.push(`:orange_square:`);
+    }
+    else if (squareColorNbr == 5) {
+      line.push(`:orange_square:`);
+    }
+    else if (squareColorNbr == 6) {
       line.push(`:black_medium_square:`);
     }
+    else if (squareColorNbr == 7) {
+      line.push(`:black_medium_square:`);
+    }
+    else if (squareColorNbr == 8) {
+      line.push(`:black_medium_square:`);
+    }
+    else if (squareColorNbr == 9) {
+      line.push(`:black_medium_square:`);
+    }
+    else if (squareColorNbr == 10) {
+      line.push(`:black_medium_square:`);
+    }
+    
   }
   line.push('\n');
 }
