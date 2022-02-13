@@ -10,10 +10,11 @@ function getRandomInt(min, max) {
 }
 let wordleWidth = getRandomInt(5,9);
 let wordleHeight = getRandomInt(2,6);
+let wordleAttempts = wordleHeight + 1;
 let wordleDay = getRandomInt(1,365);
 let line = [];
 let squareColorNbr;
-line.push('Randomdle     ' + '#' + `${wordleDay}     ` + `${wordleHeight}` + '/6' + '\n' + '\n');
+line.push('Randomdle     ' + '#' + `${wordleDay}     ` + `${wordleAttempts}` + '/7' + '\n' + '\n');
 for (j=0; j<wordleHeight; j++) {
   for (i=0; i<wordleWidth; i++) {
     squareColorNbr = getRandomInt(1,3);
