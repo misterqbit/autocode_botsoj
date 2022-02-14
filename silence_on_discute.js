@@ -89,7 +89,7 @@ async function DeleteMessage(messageId) {
             } 
             // ajout d'un zombie en cas de fil désarchivé (on vérifie d'abord que le fil n'est pas nouveau, puis on vérifie la date d'archive)
             if ((nouveau === ' ') && (maintenantNB - dateDesarchivageNB) < 1000*60*60*24)  {
-              nouveau = ' :zombie:';
+              nouveau = ' :up:';
             }
             
             hasOneResult = true;
@@ -108,7 +108,7 @@ async function DeleteMessage(messageId) {
           }
           await lib.discord.channels['@0.0.6'].messages.create({
             channel_id: channelId,
-            content: text.join('\n')
+            content: text.join('  \n')
           });
           text = [];
         }
