@@ -76,9 +76,19 @@ async function DeleteMessage(messageId) {
               var nouveau = ' ';
             }
             
+            //ajout emoji pour les fils qui vont bientôt être archivés
+            let derniermessage = threadsList.threads[j].last_message_id;
+            let datemessageNB = derniermessage / 4194304 + 1420070400000;
+            if ((maintenantNB - datemessageNB) > 60*60*60*1000) {
+              var danger = ' :hourglass:';
+            }
+            else { 
+              var danger = ' ';
+            }
+            
             hasOneResult = true;
 //            text.push('<' + '#' + channelsList[i].id + '>' + '  > ' + '<' + '#' + threadsList.threads[j].id + '>');
-            text.push('> ' + '<' + '#' + threadsList.threads[j].id + '>' + nouveau);
+            text.push('> ' + '<' + '#' + threadsList.threads[j].id + '>' + nouveau + danger);
             if (j === threadsList.threads.length - 1) {
               text.push(' '); // Séparateur entre chaque salon
             }
