@@ -68,22 +68,28 @@ async function DeleteMessage(messageId) {
             // on divise l'ID par 2^22 pour faire passer les bits 0 à 21 après la virgule et récupérer la date de création, puis on l'ajoute à la date du 1er janvier 2015 (en millisecondes écoulées depuis le 1er janvier 1970)
             let timestampNB = threadID / 4194304 + 1420070400000;
             // on soustrait la date de création à la date actuelle, et on vérifie qu'elle soit inférieure à 3 jours (en millisecondes)
-            //let nouveau;
+            let nouveau;
             if ((maintenantNB - timestampNB) < 3*24*60*60*1000) {
-              var nouveau = ' :new:';
+              nouveau = ' :new:';
             }
             else {
-              var nouveau = ' ';
+              nouveau = ' ';
             }
             
-            //ajout emoji pour les fils qui vont bientôt être archivés
+// ajout d'un sablier en cas de désarchivage dans les 12h (double-vérification de la date du dernier message, et de la date d'archive)
             let derniermessage = threadsList.threads[j].last_message_id;
             let datemessageNB = derniermessage / 4194304 + 1420070400000;
-            if ((maintenantNB - datemessageNB) > 60*60*60*1000) {
-              var danger = ' :hourglass:';
+            let dateDesarchivageNB = new Date(threadsList.threads[j].thread_metadata.archive_timestamp).getTime();
+            let danger;
+            if (((maintenantNB - datemessageNB) > 60*60*60*1000) && ((maintenantNB - dateDesarchivageNB) > 60*60*60*1000)) {
+              danger = ' :hourglass:';
             }
             else { 
-              var danger = ' ';
+              danger = ' ';
+            } 
+            // ajout d'un zombie en cas de fil désarchivé (on vérifie d'abord que le fil n'est pas nouveau, puis on vérifie la date d'archive)
+            if ((nouveau === ' ') && (maintenantNB - dateDesarchivageNB) < 1000*60*60*24)  {
+              nouveau = ' :zombie:';
             }
             
             hasOneResult = true;
