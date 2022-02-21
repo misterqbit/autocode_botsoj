@@ -12,21 +12,9 @@ if (context.params.event.channel_id == '944567098502438932') {
       }
       let sojID;
 
-      /*async function Convert2Roman(string2convert) {
-        string2convert = string2convert.replace(/1/g,"i");
-        string2convert = string2convert.replace(/2/g,"ii");
-        string2convert = string2convert.replace(/3/g,"iii");
-        string2convert = string2convert.replace(/4/g,"iv");
-        string2convert = string2convert.replace(/5/g,"v");
-        string2convert = string2convert.replace(/6/g,"vi");
-        string2convert = string2convert.replace(/7/g,"vii");
-        string2convert = string2convert.replace(/8/g,"viii");
-        string2convert = string2convert.replace(/9/g,"ix");
-      }*/
-
       //Processing the entry to remove numbers, special characters and lowercase it
       let guess = context.params.event.data.options[0].value;
-      //await Convert2Roman(guess);
+      
       guess = guess.replace(/1/g,"i");
       guess = guess.replace(/2/g,"ii");
       guess = guess.replace(/3/g,"iii");
@@ -36,9 +24,12 @@ if (context.params.event.channel_id == '944567098502438932') {
       guess = guess.replace(/7/g,"vii");
       guess = guess.replace(/8/g,"viii");
       guess = guess.replace(/9/g,"ix");
-      let guesswithNoDigits = guess.replace(/[0-9]/g, '');
-      let normalizedGuess = guesswithNoDigits.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      let lowercaseGuess = normalizedGuess.toLowerCase().replace(/'/g,"");
+
+ // Normalize and remove anything that's not a letter, a space or a digit
+let normalizedGuess = guess.normalize("NFD").replace(/[^a-zA-Z0-9 ]/g, "");
+
+// Switch everything to lowercase
+let lowercaseGuess = normalizedGuess.toLowerCase();
 
       //Print the first line with our entry converted to emoji letters
       let text = [];
