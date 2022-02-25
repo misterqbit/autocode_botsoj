@@ -1,7 +1,7 @@
 // authenticates you with the API standard library
 // type `await lib.` to display API autocomplete
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
-const gameListSize = 973;
+const gameListSize = 1091;
 
 if (context.params.event.channel_id == '944567098502438932') {
 
@@ -12,38 +12,65 @@ if (context.params.event.channel_id == '944567098502438932') {
       }
       let sojID;
 
-      //Processing the entry to remove numbers, special characters and lowercase it
-      let guess = context.params.event.data.options[0].value;
-      
-      guess = guess.replace(/1/g,"i");
-      guess = guess.replace(/2/g,"ii");
-      guess = guess.replace(/3/g,"iii");
-      guess = guess.replace(/4/g,"iv");
-      guess = guess.replace(/5/g,"v");
-      guess = guess.replace(/6/g,"vi");
-      guess = guess.replace(/7/g,"vii");
-      guess = guess.replace(/8/g,"viii");
-      guess = guess.replace(/9/g,"ix");
 
- // Normalize and remove anything that's not a letter, a space or a digit
+ //Processing the entry
+let guess = context.params.event.data.options[0].value;
+
+// Normalize and remove anything that's not a letter, a space or a digit
 let normalizedGuess = guess.normalize("NFD").replace(/[^a-zA-Z0-9 ]/g, "");
 
 // Switch everything to lowercase
 let lowercaseGuess = normalizedGuess.toLowerCase();
 
-      //Print the first line with our entry converted to emoji letters
-      let text = [];
-      text.push('> ');
-      for (i=0; i<lowercaseGuess.length; i++) {
-        if (lowercaseGuess.charAt(i) == ' ') {
-          text.push(':blue_square:');
-        }
-        else {
-          text.push(':regional_indicator_' + lowercaseGuess.charAt(i) + ':');
-        }
-      }
-      text.push('\n');
-
+// Change the guess into emojis
+let text = [];
+text.push('> ');
+for (i = 0; i < lowercaseGuess.length; i++) {
+  // Spaces
+  if (lowercaseGuess.charAt(i) === ' ') {
+    text.push(':blue_square:');
+  }
+  // Letters
+  else if (lowercaseGuess.charAt(i).match(/[a-z]/g) !== null) {
+    text.push(':regional_indicator_' + lowercaseGuess.charAt(i) + ':');
+  }
+  // Digits : no test needed - if not a space or a letter, it must be a digit. If you want to add a test, use : if (lowercaseGuess.charAt(i).match(/[0-9]/g) !== null)
+  else {
+    switch (lowercaseGuess.charAt(i)) {
+      case '0':
+        text.push(':zero:');
+        break;
+      case '1':
+        text.push(':one:');
+        break;
+      case '2':
+        text.push(':two:');
+        break;
+      case '3':
+        text.push(':three:');
+        break;
+      case '4':
+        text.push(':four:');
+        break;
+      case '5':
+        text.push(':five:');
+        break;
+      case '6':
+        text.push(':six:');
+        break;
+      case '7':
+        text.push(':seven:');
+        break;
+      case '8':
+        text.push(':eight:');
+        break;
+      case '9':
+        text.push(':nine:');
+        break;
+    }
+  }
+}
+text.push('\n');
 
       //Check if we look for a new guess or for the same
       let check = await lib.googlesheets.query['@0.3.0'].select({
