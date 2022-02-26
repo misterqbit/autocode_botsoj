@@ -5,6 +5,8 @@ const gameListSize = 1091;
 
 if (context.params.event.channel_id == '944567098502438932') {
 
+      let sheet = "games_list";
+
       function getRandomInt(min, max) {
           min = Math.ceil(min);
           max = Math.floor(max);
@@ -74,7 +76,7 @@ if (context.params.event.channel_id == '944567098502438932') {
 
       //Check if we look for a new guess or for the same
       let check = await lib.googlesheets.query['@0.3.0'].select({
-        range: `games_list!E:H`,
+        range: `${sheet}!E:H`,
         bounds: 'FIRST_EMPTY_ROW',
         where: [
           {
@@ -92,7 +94,7 @@ if (context.params.event.channel_id == '944567098502438932') {
       if (lowercaseGuess === 'new') {
         sojID = getRandomInt(1,gameListSize);
         await lib.googlesheets.query['@0.3.0'].update({
-            range: `games_list!E:H`,
+            range: `${sheet}!E:H`,
             bounds: 'FIRST_EMPTY_ROW',
             where: [
                     {
@@ -102,14 +104,14 @@ if (context.params.event.channel_id == '944567098502438932') {
             fields: {
                 'activeround': `${sojID}`,
                 'intents' : 0,
-                'games' : gamesNbr
+                'game' : gamesNbr
             },
         });
       }
       else if (check.rows[0].fields.activeround != 'empty') {
         sojID = check.rows[0].fields.activeround;
         await lib.googlesheets.query['@0.3.0'].update({
-            range: `games_list!E:H`,
+            range: `${sheet}!E:H`,
             bounds: 'FIRST_EMPTY_ROW',
             where: [
                     {
@@ -125,7 +127,7 @@ if (context.params.event.channel_id == '944567098502438932') {
       else {
         sojID = getRandomInt(1,gameListSize);
         await lib.googlesheets.query['@0.3.0'].update({
-            range: `games_list!E:H`,
+            range: `${sheet}!E:H`,
             bounds: 'FIRST_EMPTY_ROW',
             where: [
                     {
@@ -135,14 +137,14 @@ if (context.params.event.channel_id == '944567098502438932') {
             fields: {
                 'activeround': `${sojID}`,
                 'intents': 0,
-                'games' : gamesNbr
+                'game' : gamesNbr
             },
         });
       }
 
       //Get the word to be guessed
       let result = await lib.googlesheets.query['@0.3.0'].select({
-        range: `games_list!A:C`,
+        range: `${sheet}!A:C`,
         bounds: 'FIRST_EMPTY_ROW',
         where: [
           {
@@ -214,7 +216,7 @@ if (context.params.event.channel_id == '944567098502438932') {
       if (lowercaseGuess === result.rows[0].fields.games) {
         let playedNbr = parseInt(result.rows[0].fields.played) + 1;
         await lib.googlesheets.query['@0.3.0'].update({
-            range: `games_list!A:C`,
+            range: `${sheet}!A:C`,
             bounds: 'FIRST_EMPTY_ROW',
             where: [
                     {
@@ -233,7 +235,7 @@ if (context.params.event.channel_id == '944567098502438932') {
         }
         sojID = getRandomInt(1,gameListSize);
         await lib.googlesheets.query['@0.3.0'].update({
-            range: `games_list!E:H`,
+            range: `${sheet}!E:H`,
             bounds: 'FIRST_EMPTY_ROW',
             where: [
                     {
@@ -243,7 +245,7 @@ if (context.params.event.channel_id == '944567098502438932') {
             fields: {
                 'activeround': `${sojID}`,
                 'intents' : 0,
-                'games' : gamesNbr
+                'game' : gamesNbr
             },
         });
       }
@@ -257,7 +259,7 @@ if (context.params.event.channel_id == '944567098502438932') {
       //Print the new word to guess
       if (lowercaseGuess === result.rows[0].fields.games) {
         let newResult = await lib.googlesheets.query['@0.3.0'].select({
-          range: `games_list!A:C`,
+          range: `${sheet}!A:C`,
           bounds: 'FIRST_EMPTY_ROW',
           where: [
             {
@@ -291,7 +293,6 @@ if (context.params.event.channel_id == '944567098502438932') {
         });
       }
 }
-
 else {
   let result = await lib.discord.channels['@0.3.0'].messages.create({
     channel_id: context.params.event.channel_id,
