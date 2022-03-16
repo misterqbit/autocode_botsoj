@@ -115,15 +115,16 @@ for (var i = 0; i < channelsList.length; i++) {
         if (hasOneResult === false) {
             messageText.push('Aucun fil actif trouvé sur ce serveur !');
         }
-    if (messageText !== []) {
-      console.log(messageText);
+    if (!messageText.length) {
+      }
+    else {
       await lib.discord.channels['@0.0.6'].messages.create({
         channel_id: channelId,
         content: messageText.join(' \n')
       });
       messageText = [];
     }       
-    }
+  }
 }
 /*messageText.push(` `);
 messageText.push("**__Légende :__**");
