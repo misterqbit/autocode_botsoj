@@ -119,7 +119,6 @@ if (context.params.event.channel_id == '944567098502438932') {
                     }
                   ],
             fields: {
-                'activeround': `${sojID}`,
                 'intents': intentsNbr
             },
         });
@@ -157,18 +156,20 @@ if (context.params.event.channel_id == '944567098502438932') {
         },
       });
 
-      //Build the answer
+      //Prepare the answer
       text.push('> ');
       let orangeFlag;
       let stringLength = result.rows[0].fields.games.length;
       let answer = result.rows[0].fields.games;
 
+//Les lettres bien placees sont enlevees de answer, pour ne pas les compter comme Orange par la suite
       for (i=0; i<stringLength; i++) {
         if (lowercaseGuess.charAt(i) === result.rows[0].fields.games.charAt(i)) {
           answer = answer.replace(`${lowercaseGuess.charAt(i)}`,'');
         }
       }
-
+      
+// Construction de la reponse
       for (i=0; i<stringLength; i++) {
           if(result.rows[0].fields.games.charAt(i) === ' ') {
               text.push(':blue_square:');
@@ -229,11 +230,95 @@ if (context.params.event.channel_id == '944567098502438932') {
         });
         if (intentsNbr == 1) {
           reward = ` SOJDLE #${check.rows[0].fields.game} résolu au ${intentsNbr}er essai!! Wow!`;
+          await lib.googlesheets.query['@0.3.0'].insert({
+            range: `users_scoring!B:D`,
+            fieldsets: [
+              {
+                'players': `${context.params.event.member.user.username}`,
+                'points' : 10,
+                'games' : `SOJDLE #${check.rows[0].fields.game}`
+              }
+            ]
+          });
         }
         else {
           reward = ` SOJDLE #${check.rows[0].fields.game} résolu au ${intentsNbr}e essai. Bravo!`;
+          let points = 10;
+          if(intentsNbr > 9) {
+            points = 0;
+          }
+          else {
+            points -= intentsNbr;
+          }
+          await lib.googlesheets.query['@0.3.0'].insert({
+            range: `users_scoring!B:D`,
+            fieldsets: [
+              {
+                'players': `${context.params.event.member.user.username}`,
+                'points' : points,
+                'games' : `SOJDLE #${check.rows[0].fields.game}`
+              }
+            ]
+          });
         }
         sojID = getRandomInt(1,gameListSize);
+        
+        var newResult = await lib.googlesheets.query['@0.3.0'].select({
+                  range: `${sheet}!A:C`,
+                  bounds: 'FIRST_EMPTY_ROW',
+                  where: [
+                    {
+                      'id': `${sojID}`
+                    }
+                  ],
+                  limit: {
+                    'count': 0,
+                    'offset': 0
+                  },
+                });
+        if (newResult.rows[0].fields.played != 0) {
+          sojID = getRandomInt(1,gameListSize);
+          newResult = await lib.googlesheets.query['@0.3.0'].select({
+                    range: `${sheet}!A:C`,
+                    bounds: 'FIRST_EMPTY_ROW',
+                    where: [
+                      {
+                        'id': `${sojID}`
+                      }
+                    ],
+                    limit: {
+                      'count': 0,
+                      'offset': 0
+                    },
+          });
+        }
+        if (newResult.rows[0].fields.played != 0) {
+          sojID = getRandomInt(1,gameListSize);
+          newResult = await lib.googlesheets.query['@0.3.0'].select({
+                    range: `${sheet}!A:C`,
+                    bounds: 'FIRST_EMPTY_ROW',
+                    where: [
+                      {
+                        'id': `${sojID}`
+                      }
+                    ],
+                    limit: {
+                      'count': 0,
+                      'offset': 0
+                    },
+          });
+        }
+      }
+      else {}
+
+      await lib.discord.channels['@0.2.2'].messages.create({
+        channel_id: `${context.params.event.channel_id}`,
+        content: `<@!${context.params.event.member.user.id}> :` + reward + '\n' + text.join(' ')
+      });
+
+      //Print the new word to guess
+      if (lowercaseGuess === result.rows[0].fields.games) {
+
         await lib.googlesheets.query['@0.3.0'].update({
             range: `${sheet}!E:H`,
             bounds: 'FIRST_EMPTY_ROW',
@@ -248,32 +333,53 @@ if (context.params.event.channel_id == '944567098502438932') {
                 'game' : gamesNbr
             },
         });
-      }
-      else {}
-
-      await lib.discord.channels['@0.2.2'].messages.create({
-        channel_id: `${context.params.event.channel_id}`,
-        content: `<@!${context.params.event.member.user.id}> :` + reward + '\n' + text.join(' ')
-      });
-
-      //Print the new word to guess
-      if (lowercaseGuess === result.rows[0].fields.games) {
-        let newResult = await lib.googlesheets.query['@0.3.0'].select({
-          range: `${sheet}!A:C`,
-          bounds: 'FIRST_EMPTY_ROW',
-          where: [
-            {
-              'id': `${sojID}`
-            }
-          ],
-          limit: {
-            'count': 0,
-            'offset': 0
-          },
-        });
 
         let newText = [];
-        newText.push(':regional_indicator_' + newResult.rows[0].fields.games.charAt(0) + ':');
+
+        //New text begins with:
+        // Spaces
+        if (newResult.rows[0].fields.games.charAt(0) === ' ') {
+          newText.push(':blue_square:');
+        }
+        // Letters
+        else if (newResult.rows[0].fields.games.charAt(0).match(/[a-z]/g) !== null) {
+          newText.push(':regional_indicator_' + newResult.rows[0].fields.games.charAt(0) + ':');
+        }
+        // Digits : no test needed - if not a space or a letter, it must be a digit. If you want to add a test, use : if (lowercaseGuess.charAt(i).match(/[0-9]/g) !== null)
+        else {
+          switch (newResult.rows[0].fields.games.charAt(0)) {
+            case '0':
+              newText.push(':zero:');
+              break;
+            case '1':
+              newText.push(':one:');
+              break;
+            case '2':
+              newText.push(':two:');
+              break;
+            case '3':
+              newText.push(':three:');
+              break;
+            case '4':
+              newText.push(':four:');
+              break;
+            case '5':
+              newText.push(':five:');
+              break;
+            case '6':
+              newText.push(':six:');
+              break;
+            case '7':
+              newText.push(':seven:');
+              break;
+            case '8':
+              newText.push(':eight:');
+              break;
+            case '9':
+              newText.push(':nine:');
+              break;
+          }
+        }
 
         for (i=1; i<newResult.rows[0].fields.games.length; i++) {
             if(newResult.rows[0].fields.games.charAt(i) === ' ') {
