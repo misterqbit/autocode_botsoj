@@ -13,13 +13,22 @@ let dices_type = context.params.event.data.options[1].value;
 let result = [];
 result.push(`<@!${context.params.event.member.user.id}>`);
 result.push('\n');
-for (i=1; i<(dices_number+1); i++) {
-  let diceresult = getRandomInt(1,dices_type);
-  result.push("Dé "+i+": "+diceresult);
-  result.push('\n');
+
+if (dices_number > 128) {
+  result.push("Est-ce bien raisonnable de vouloir faire autant de lancers?");
+  await lib.discord.channels['@0.2.2'].messages.create({
+    channel_id: `${context.params.event.channel_id}`,
+    content: result.join(' ')
+    });
+}
+else {
+  for (i=1; i<(dices_number+1); i++) {
+    let diceresult = getRandomInt(1,dices_type);
+    result.push(":game_die: ["+dices_type+" faces] >> Lancer n°"+i+" >> Résultat: **"+diceresult+"**");
+    result.push('\n');
   }
-  
-await lib.discord.channels['@0.2.2'].messages.create({
-  channel_id: `${context.params.event.channel_id}`,
-  content: result.join(' ')
-});
+  await lib.discord.channels['@0.2.2'].messages.create({
+    channel_id: `${context.params.event.channel_id}`,
+    content: result.join(' ')
+  });
+}
