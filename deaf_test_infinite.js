@@ -11,7 +11,7 @@ function getRandomInt(min, max) {
 if (context.params.event.channel_id == '928370783603028018') {
   /////////////////////////////////////CPC Power /////////////////////////////
 
-    let randomgamenumber = getRandomInt(1,3698);
+/*    let randomgamenumber = getRandomInt(1,3698);
 
     let result = await lib.googlesheets.query['@0.3.0'].update({
         range: `variables!B:C`,
@@ -62,13 +62,13 @@ if (context.params.event.channel_id == '928370783603028018') {
             }
           }
         ]
-    });
+    });*/
 }
 else if (context.params.event.channel_id == '953642125931708486') {
   /////////////////////////////////// GAMESDB ////////////////////////////
-  let randomgamenumber;
+/*  let randomgamenumber;
   function findURL() {
-    randomgamenumber = getRandomInt(1,12202);
+    randomgamenumber = getRandomInt(1,50000);
   }
   
   let newgamemessage = await lib.discord.channels['@0.2.0'].messages.create({
@@ -84,8 +84,8 @@ else if (context.params.event.channel_id == '953642125931708486') {
       method: 'GET',
       url: `https://cdn.thegamesdb.net/images/original/screenshot/${randomgamenumber}-1.jpg`
     });
-    console.log(URLGET.statusCode); 
-    console.log(`https://cdn.thegamesdb.net/images/original/screenshot/${randomgamenumber}-1.jpg`);  
+    //console.log(URLGET.statusCode); 
+    //console.log(`https://cdn.thegamesdb.net/images/original/screenshot/${randomgamenumber}-1.jpg`);  
     if (URLGET.statusCode == 200) {
       i = 1;
     }
@@ -139,7 +139,7 @@ else if (context.params.event.channel_id == '953642125931708486') {
         }
       }
     ]
-  });
+  });*/
 }
 
 else {
