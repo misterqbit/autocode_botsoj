@@ -2,11 +2,40 @@
 // type `await lib.` to display API autocomplete
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
+//old message
+/*
+await lib.discord.users['@0.2.0'].dms.create({
+  recipient_id: `${context.params.event.user.id}`,
+  content: `Bonjour ${context.params.event.user.username}, bienvenue sur Silence On Joue! N'hésitez pas à participer!! Réagissez aux épisodes de SoJ sur l'espace LE PODCAST. Commentez votre passion pour la chose ludique sur l'espace LES JEUX. Partagez vos avis et vos envies non ludiques sur l'espace BLA BLA. Parcourez les salons de chacun de ces espaces. Soyez curieux! Explorez les fils existants dans ces salons, désarchivez-les, créez vos fils si vous sentez une thématique, la plupart s'effilochent et ce n'est pas grave :) Essayez de débuter un message par /, un choix de commandes apparaitra. Des doutes techniques sur cette app discord? Venez sur le salon #tuto-discord.`
+});
+*/
 
+const currentBanniere = `https://cdn.discordapp.com/attachments/829751653984239736/995353529789186158/unknown.png` ;
 
 await lib.discord.users['@0.2.0'].dms.create({
   recipient_id: `${context.params.event.user.id}`,
-  content: `Bonjour ${context.params.event.user.username}, bienvenue sur Silence On Joue! N'hésitez pas à participer!! Réagissez aux épisodes de SoJ sur l'espace LE PODCAST. Commentez votre passion pour la chose ludique sur l'espace LES JEUX. Partagez vos avis et vos envies non ludiques sur l'espace BLA BLA. Parcourez les salons de chacun de ces espaces. Soyez curieux! Explorez les fils existants dans ces salons, désarchivez-les, créez vos fils si vous sentez une thématique, la plupart s'effilochent et ce n'est pas grave :) Essayez de débuter un message par /, un choix de commandes apparaitra. Des doutes techniques sur cette app discord? Venez sur le salon #tuto-discord `
-});
+  "content": "",
+    "tts": false,
+    "embeds": [
+      {
+        "type": "rich",
+        "title": `Bienvenue sur Silence On Joue !`,
+        "description": `Bonjour <@${context.params.event.user.id}> ! \n\nPour bien démarrer, rends-toi sur [#les-règles-du-jeu](https://discord.com/channels/342731229315072000/902490569824161812) pour consulter les quelques règles du serveur. Tu peux aussi aller te présenter sur [#présentations](https://discord.com/channels/342731229315072000/902875037730758726), mais rien d'obligatoire. 😉 \n\nSi tu es venu·e pour réagir aux épisodes de SoJ, tu trouveras ton bonheur dans les fils du salon [#derniers-épisodes](https://discord.com/channels/342731229315072000/902492905904693288). Pour discuter de façon plus générale autour du podcast, direction le salon [#autour-de-soj](https://discord.com/channels/342731229315072000/902494925696929803). Mais surtout, pense à consulter régulièrement le salon [#discussions-en-cours](https://discord.com/channels/342731229315072000/941250672811212810) pour retrouver la liste des sujets chauds du moment. 🔥 \n\nTu peux également échanger sur le monde vidéoludique dans [#jeux-vidéo](https://discord.com/channels/342731229315072000/902495555052261387) 🕹️ , ou juste raconter ta vie dans les nombreux fils des salons [#de-tout-et-de-rien](https://discord.com/channels/342731229315072000/902495162725462026) ainsi que [#et-quand-vous-ne-jouez-pas](https://discord.com/channels/342731229315072000/902858210057269249). \n\nDans tous les cas, n'hésite pas à participer, à fouiner et à être curieu·reuse ! Explore les fils existants, désarchive-les si tu veux les relancer, et crées-en si tu sens de l'engouement sur une thématique particulière; la plupart des fils s'effilochent, mais ce n'est pas grave! 🙂 Si tu ne sais pas comment t'y prendre, tu peux t'auto-former sur le salon [#tuto-discord](https://discord.com/channels/342731229315072000/909882162378051585). 🧑‍🏫 Tu peux même utiliser notre magnifique bot jesuisunrobot : commence un message par / et découvre ses nombreuses commandes. 🤖 \n\n Pour terminer, en cas de problème, tu peux appeler @ Modération à l'aide ou envoyer un message privé à un·e membre de l'équipe de modération. Notre philosophie : faire de ce Discord un lieu d'échange inclusif et bienveillant, sans pour autant exclure les débats ou les boutades ! \n\nBonne visite, et au plaisir de te croiser ! 😃 Pourquoi pas sur le salon de jeu [#deaf-test](https://discord.com/channels/342731229315072000/922434323020414976) et ses nombreux fils ?`,
+        "color": 15548997,
+    "image": {
+            "url": `${currentBanniere}`,
+            "height": 0,
+            "width": 0
+                   },
+      }
+    ]
+  });
 
 console.log (`Welcome message sent to ${context.params.event.user.username}`)
+
+let messageResponse = await lib.discord.channels['@0.0.6'].messages.create({
+  channel_id: "919246510238076988",
+  content: 
+  `Message de bienvenue envoyé à ${context.params.event.user.username}`
+});
+
