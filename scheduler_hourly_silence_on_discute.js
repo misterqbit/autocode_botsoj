@@ -10,6 +10,13 @@ const emojiDesarchivage = ":up:"; // Emoji utilisé pour un fil récemment désa
 const emojiArchivage = ":hourglass:"; // Emoji utilisé pour un fil qui part bientôt en archivage
 const emojiNouveau = ":new:"; // Emoji utilisé pour un fil récemment créé
 
+// Fonction de timer
+let sleep = async (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+};
+
 
 // Fonction de suppression
 // messageId = ID Discord du message à supprimer
@@ -30,6 +37,7 @@ var messagesList = await lib.discord.channels['@0.0.6'].messages.list({
 // Le await permet de ne poursuivre que lorsque la fonction deleteMessage a terminé son traitement
 for (message of messagesList) {
     await deleteMessage(message.id);
+    await sleep(500);
 }
 
 var messageText = []; // recueillera l'assemblage du texte affiché dans un message
@@ -98,7 +106,12 @@ for (var i = 0; i < channelsList.length; i++) {
             if ((!emojisText.includes(emojiNouveau)) && (maintenantNB - dateDesarchivageNB) < 1000 * 60 * 60 * 24) {
                 emojisText += (" " + emojiDesarchivage);
             }
-
+/*            // On demande la liste de utilisateurs du fil - pour en compter le nombre
+            await sleep(250);
+            let thread_members = await lib.discord.channels['@0.2.2'].threads.members.list({
+              thread_id: threadsList.threads[j].id
+            });*/
+            
             // On ajoute la ligne
             messageText.push('> <#' + threadsList.threads[j].id + '>' + emojisText);
             if (j === threadsList.threads.length - 1) {
