@@ -7,7 +7,7 @@ let result = await lib.googlesheets.query['@0.3.0'].select({
   bounds: 'FIRST_EMPTY_ROW',
   where: [
     {
-      'channel_id': `${context.params.event.channel_id}`
+      'gamemaster': `${context.params.event.user.id}`
     }
   ],
   limit: {
@@ -15,11 +15,11 @@ let result = await lib.googlesheets.query['@0.3.0'].select({
     'offset': 0
   },
 });
-console.log(result.rows[0].fields.position);
+//console.log(result.rows[0].fields.position);
 if (result.rows.length == 0) {
 }
-else{
-  if (result.rows[0].fields.gamemaster == context.params.event.member.user.id) {
+
+else {
     let position = (result.rows[0].fields.position).toString();
     let abs = position.substring(0,2);
     let ord = position.substring(2,4);
@@ -31,18 +31,20 @@ else{
         //special message with NEXT button going to USE breakpoint
         //in USE breakpoint, display FEZ GLASSES GIF as starting image. With TAKE and USE Buttons. Contextual menu?
         //Make a path to resolve the lutin image
-        //End image: Neo removing the plug... La mort se rapproche à chaque seconde, ces heures de vie se sont envolées. Je ne dois plus répondre à l'appel du jeu. Déconnexion!
+        //End image: Neo removing the plug... La mort se rapproche à chaque seconde, ces heures de vie se sont envolées. Je ne dois plus répondre à l'appel du jeu. Déco!
       }
       else if (result.rows[0].fields.ngp == 1) {
         //ngp = 2
       }
-      else {}
+      else {
+        
+      }
     }
     //normal game
     else {
       //Aller vers l'est
       let xi = (parseInt(abs) + 1);
-
+      
       let move = await lib.googlesheets.query['@0.3.0'].select({
         range: `adventure!AA:BI`,
         bounds: 'FIRST_EMPTY_ROW',
@@ -59,14 +61,14 @@ else{
       if ((move.rows[0].fields[xi]).includes("e")) {
         let new_position = (parseInt(position)+200).toString();
 
-  //SCORING
+      //SCORING
         if (new_position == "3654" || new_position == "4256" || new_position == "4644" || new_position == "5062" || new_position == "5654") {
           let score = await lib.googlesheets.query['@0.3.0'].select({
             range: `adventure!A:H`,
             bounds: 'FIRST_EMPTY_ROW',
             where: [
               {
-                'channel_id': `${context.params.event.channel_id}`,
+                  'gamemaster': `${context.params.event.user.id}`
               }
             ],
             limit: {
@@ -122,7 +124,7 @@ else{
             bounds: 'FIRST_EMPTY_ROW',
             where: [
               {
-                'channel_id': `${context.params.event.channel_id}`,
+                  'gamemaster': `${context.params.event.user.id}`
               }
             ],
             limit: {
@@ -138,15 +140,17 @@ else{
             }
           });
           let progress = parseInt(((scoreupdate[0]+scoreupdate[1]+scoreupdate[2]+scoreupdate[3]+scoreupdate[4])*100)/23270);
-          console.log(progress);
+         // console.log(progress);
           if (progress == 100) {
-            await lib.discord.channels['@0.0.6'].messages.create({
+            /*await lib.discord.channels['@0.0.6'].messages.create({
               channel_id: `${context.params.event.channel_id}`,
-              content: [
-                `<@${context.params.event.member.user.id}> : Votre progression est de : ${progress}%.`,
+*/
+            await lib.discord.users['@0.2.0'].dms.create({
+              recipient_id: `${context.params.event.user.id}`,
+              content: [`<@${context.params.event.user.id}> : Votre progression est de : ${progress}%.`,
                 `Bravo! Vous avez trouvé tous les secrets de ce voyage dans les univers de SRAM, Pharaon, La Secte Noire, La Chose de Grotemburg et le Passager du Temps!`
               ].join('\n'),
-              embeds: [
+            embeds: [
                 {
                   "type": "rich",
                   "title": "",
@@ -163,13 +167,15 @@ else{
             the_end = 1;
           }
           else {
-            await lib.discord.channels['@0.0.6'].messages.create({
-              channel_id: `${context.params.event.channel_id}`,
-              content: [
-              `<@${context.params.event.member.user.id}> : Bravo pour cette découverte!`,
-              `Votre progression est de : ${progress}%.`
-              ].join('\n')
-            });
+/*            await lib.discord.channels['@0.0.6'].messages.create({
+              channel_id: `${context.params.event.channel_id}`,*/
+              await lib.discord.users['@0.2.0'].dms.create({
+                recipient_id: `${context.params.event.user.id}`,
+                content: [
+                  `<@${context.params.event.user.id}> : Bravo pour cette découverte!`,
+                  `Votre progression est de : ${progress}%.`
+                ].join('\n')
+              });
           }
         }
 
@@ -190,10 +196,11 @@ else{
         });
 
 
-        await lib.discord.channels['@0.2.0'].messages.create({
-          "channel_id": `${context.params.event.channel_id}`,
+/*        await lib.discord.channels['@0.2.0'].messages.create({
+          "channel_id": `${context.params.event.channel_id}`,*/
+        await lib.discord.users['@0.2.0'].dms.create({
+          "recipient_id": `${context.params.event.user.id}`,
           "content": `>EST:`,
-          "tts": false,
           "components": [
             {
               "type": 1,
@@ -253,7 +260,7 @@ else{
             bounds: 'FIRST_EMPTY_ROW',
             where: [
               {
-                'channel_id': `${context.params.event.channel_id}`,
+                  'gamemaster': `${context.params.event.user.id}`
               }
             ],
             limit: {
@@ -265,12 +272,14 @@ else{
             }
           });
       }
+      
       else {
-        await lib.discord.channels['@0.0.6'].messages.create({
-          channel_id: context.params.event.channel_id,
-          content: `>EST : Vous ne pouvez pas aller vers l'Est.`
+/*        await lib.discord.channels['@0.0.6'].messages.create({
+          channel_id: context.params.event.channel_id,*/
+        await lib.discord.users['@0.2.0'].dms.create({
+          "recipient_id": `${context.params.event.user.id}`,
+          "content": `>EST : Vous ne pouvez pas aller vers l'Est.`
         });
       }
     }
   }
-}
