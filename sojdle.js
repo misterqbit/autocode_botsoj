@@ -1,7 +1,7 @@
 // authenticates you with the API standard library
 // type `await lib.` to display API autocomplete
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
-const gameListSize = 1091;
+const gameListSize = 1178;
 
 if (context.params.event.channel_id == '944567098502438932') {
 
@@ -92,7 +92,7 @@ if (context.params.event.channel_id == '944567098502438932') {
       let gamesNbr = parseInt(check.rows[0].fields.game) + 1;
 
       if (lowercaseGuess === 'new') {
-        sojID = getRandomInt(1,gameListSize);
+        sojID = getRandomInt(1,gameListSize);   ////////////////// NEW SOJ GAME
         await lib.googlesheets.query['@0.3.0'].update({
             range: `${sheet}!E:H`,
             bounds: 'FIRST_EMPTY_ROW',
@@ -124,7 +124,7 @@ if (context.params.event.channel_id == '944567098502438932') {
         });
       }
       else {
-        sojID = getRandomInt(1,gameListSize);
+        sojID = getRandomInt(1,gameListSize); ////////////////// NEW SOJ GAME
         await lib.googlesheets.query['@0.3.0'].update({
             range: `${sheet}!E:H`,
             bounds: 'FIRST_EMPTY_ROW',
@@ -228,13 +228,18 @@ if (context.params.event.channel_id == '944567098502438932') {
                 'played': playedNbr
             },
         });
+        let currentDate = new Date();
+        let cDay = currentDate.toISOString();
+//        console.log(cDay);
+        cDay = cDay.substring(0,10);
         if (intentsNbr == 1) {
           reward = ` SOJDLE #${check.rows[0].fields.game} résolu au ${intentsNbr}er essai!! Wow!`;
           await lib.googlesheets.query['@0.3.0'].insert({
-            range: `users_scoring!B:D`,
+            range: `users_scoring!A:D`,
             fieldsets: [
               {
                 'players': `${context.params.event.member.user.username}`,
+                'date': `${cDay}`,
                 'points' : 10,
                 'games' : `SOJDLE #${check.rows[0].fields.game}`
               }
@@ -251,17 +256,18 @@ if (context.params.event.channel_id == '944567098502438932') {
             points -= intentsNbr;
           }
           await lib.googlesheets.query['@0.3.0'].insert({
-            range: `users_scoring!B:D`,
+            range: `users_scoring!A:D`,
             fieldsets: [
               {
                 'players': `${context.params.event.member.user.username}`,
+                'date': `${cDay}`,
                 'points' : points,
                 'games' : `SOJDLE #${check.rows[0].fields.game}`
               }
             ]
           });
         }
-        sojID = getRandomInt(1,gameListSize);
+        sojID = getRandomInt(1,gameListSize); ////////////////// NEW SOJ GAME
         
         var newResult = await lib.googlesheets.query['@0.3.0'].select({
                   range: `${sheet}!A:C`,
