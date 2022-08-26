@@ -7,7 +7,7 @@ let result = await lib.googlesheets.query['@0.3.0'].select({
   bounds: 'FIRST_EMPTY_ROW',
   where: [
     {
-      'channel_id': `${context.params.event.channel_id}`
+      'gamemaster': `${context.params.event.user.id}`
     }
   ],
   limit: {
@@ -15,11 +15,11 @@ let result = await lib.googlesheets.query['@0.3.0'].select({
     'offset': 0
   },
 });
-console.log(result.rows[0].fields.position);
+//console.log(result.rows[0].fields.position);
 if (result.rows.length == 0) {
 }
 else{
-  if (result.rows[0].fields.gamemaster == context.params.event.member.user.id) {
+  if (result.rows[0].fields.gamemaster == context.params.event.user.id) {
 
     let position = (result.rows[0].fields.position).toString();
     let abs = position.substring(0,2);
@@ -58,7 +58,7 @@ else{
             bounds: 'FIRST_EMPTY_ROW',
             where: [
               {
-                'channel_id': `${context.params.event.channel_id}`,
+                'gamemaster': `${context.params.event.user.id}`
               }
             ],
             limit: {
@@ -114,7 +114,7 @@ else{
               bounds: 'FIRST_EMPTY_ROW',
               where: [
                 {
-                  'channel_id': `${context.params.event.channel_id}`,
+                  'gamemaster': `${context.params.event.user.id}`
                 }
               ],
               limit: {
@@ -130,12 +130,14 @@ else{
               }
             });
             let progress = parseInt(((scoreupdate[0]+scoreupdate[1]+scoreupdate[2]+scoreupdate[3]+scoreupdate[4])*100)/23270);
-            console.log(progress);
+            //console.log(progress);
             if (progress == 100) {
-            await lib.discord.channels['@0.0.6'].messages.create({
-              channel_id: `${context.params.event.channel_id}`,
+            /*await lib.discord.channels['@0.0.6'].messages.create({
+              channel_id: `${context.params.event.channel_id}`,*/
+            await lib.discord.users['@0.2.0'].dms.create({
+              recipient_id: `${context.params.event.user.id}`,
               content: [
-              `<@${context.params.event.member.user.id}> : Votre progression est de : ${progress}%.`,
+              `<@${context.params.event.user.id}> : Votre progression est de : ${progress}%.`,
               `Bravo! Vous avez trouvé tous les secrets de ce voyage dans les univers de SRAM, Pharaon, La Secte Noire, La Chose de Grotemburg et le Passager du Temps!`
               ].join('\n'),
               embeds: [
@@ -155,10 +157,12 @@ else{
             the_end = 1;
           }
           else {
-            await lib.discord.channels['@0.0.6'].messages.create({
-              channel_id: `${context.params.event.channel_id}`,
+            /*await lib.discord.channels['@0.0.6'].messages.create({
+              channel_id: `${context.params.event.channel_id}`,*/
+            await lib.discord.users['@0.2.0'].dms.create({
+              recipient_id: `${context.params.event.user.id}`,
               content: [
-              `<@${context.params.event.member.user.id}> : Bravo pour cette découverte!`,
+              `<@${context.params.event.user.id}> : Bravo pour cette découverte!`,
               `Votre progression est de : ${progress}%.`
               ].join('\n')
             });
@@ -178,8 +182,10 @@ else{
             'offset': 0
           },
         });
-        await lib.discord.channels['@0.2.0'].messages.create({
-          "channel_id": `${context.params.event.channel_id}`,
+        /*await lib.discord.channels['@0.2.0'].messages.create({
+          "channel_id": `${context.params.event.channel_id}`,*/
+        await lib.discord.users['@0.2.0'].dms.create({
+          "recipient_id": `${context.params.event.user.id}`,
           "content": `>SUD:`,
           "tts": false,
           "components": [
@@ -241,7 +247,7 @@ else{
             bounds: 'FIRST_EMPTY_ROW',
             where: [
               {
-                'channel_id': `${context.params.event.channel_id}`,
+                'gamemaster': `${context.params.event.user.id}`
               }
             ],
             limit: {
@@ -255,9 +261,11 @@ else{
 
       }
       else {
-        await lib.discord.channels['@0.0.6'].messages.create({
-          channel_id: context.params.event.channel_id,
-          content: `>SUD: Vous ne pouvez pas aller vers le Sud.`
+        /*await lib.discord.channels['@0.0.6'].messages.create({
+          channel_id: context.params.event.channel_id,*/
+        await lib.discord.users['@0.2.0'].dms.create({
+           recipient_id: `${context.params.event.user.id}`,
+           content: `>SUD: Vous ne pouvez pas aller vers le Sud.`
         });
       }
     }
