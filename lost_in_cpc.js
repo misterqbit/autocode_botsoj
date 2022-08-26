@@ -4,8 +4,8 @@ const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 await lib.discord.interactions['@0.0.0'].followups.ephemeral.create({
   token: `${context.params.event.token}`,
-  content: `Bravo! Vous avez trouvé tous les secrets de ce voyage dans les univers de SRAM, mais aussi de...`,
-  embeds: [
+  content: `https://i.ibb.co/b2WC5D4/thend.gif`
+/*  embeds: [
     {
       "type": "rich",
       "title": "",
@@ -17,12 +17,12 @@ await lib.discord.interactions['@0.0.0'].followups.ephemeral.create({
         "width": 400
       }
     }
-  ]
+  ]*/
 });
 
 await lib.discord.interactions['@0.0.0'].followups.ephemeral.create({
   token: `${context.params.event.token}`,
-  content: `La fin? Quelle fin? M'enfin! Je veux la trouver cette fin! Je veux explorer, résoudre des énigmes, éviter les pièges, améliorer mes compétences, je veux la mériter, cette fin! Cachez cette fin que je ne saurais voir! Et démarrons cette aventure`,
+  content: `Bravo! Vous avez trouvé tous les secrets de ce voyage dans les univers de SRAM, mais aussi de........ La fin? Quelle fin? M'enfin! Je veux la trouver cette fin! Je veux explorer, résoudre des énigmes, éviter les pièges, améliorer mes compétences, je veux la mériter, cette fin! Cachez cette fin que je ne saurais voir! Et démarrons cette aventure!!`,
 });
 
 await lib.discord.channels['@0.2.0'].messages.create({
