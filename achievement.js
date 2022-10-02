@@ -21,7 +21,7 @@ let buffer = await img.getBufferAsync(jimp.MIME_PNG);
 
 await lib.discord.channels['@0.1.1'].messages.create({
     channel_id: context.params.event.channel_id,
-    content: ``,
-    filename: 'idcard.png',
+    content: `Par <@!${context.params.event.member.user.id}> :`,
+    filename: 'soj_achievement.png',
     file: buffer,
 });
