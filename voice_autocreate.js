@@ -7,7 +7,7 @@ const voiceChannelId = process.env.VOICE_CHANNEL_ID
 
 // The voice channel name to create for the user
 const voiceChannelName = `${event.member.user.username} au micro`
-console.log(event.member.user.username);
+
 // Create a new voice channel when the user joins the specifc voice channel
 const joinedChannel = channel_id === voiceChannelId
 if (joinedChannel) {
@@ -22,7 +22,7 @@ if (joinedChannel) {
       guild_id,
       name: voiceChannelName,
       type: 2, // vc
-      parent_id: `902492159972892763`   //ID de la catégorie où se créera le channel vocal
+      parent_id: `642121139719766067`
     })
     await lib.discord.guilds['@0.1.0'].members.update({
       guild_id, user_id,
@@ -36,9 +36,7 @@ if (joinedChannel) {
 const leftChannel = !channel_id
 if (leftChannel) {
   const channels = await lib.discord.guilds['@0.1.0'].channels.list({ guild_id });
- // const channel = channels.find(c => c.name === voiceChannelName)
-  const channel = channels.find(c => c.name.includes(`${event.member.user.username}`))
- 
+  const channel = channels.find(c => c.name === voiceChannelName)
   if (channel)
     await lib.discord.channels['@0.2.0'].destroy({ channel_id: channel.id });
   return
