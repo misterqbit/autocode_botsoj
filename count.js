@@ -8,11 +8,11 @@ if (context.params.event.data.options[0].name === "members") {
   // make API request
   let result = await lib.discord.guilds['@0.0.6'].preview.list({
     guild_id: `${context.params.event.guild_id}`
-  });
+  }); 
   
-  // Removing 3 robots
-  let members_number = result.approximate_member_count - 3;
-  let active_members_number = result.approximate_presence_count - 3;
+  // Removing 8 robots
+  let members_number = result.approximate_member_count - 8;
+  let active_members_number = result.approximate_presence_count - 8;
   members_number = members_number.toString();
   //////
   
@@ -37,14 +37,14 @@ if (context.params.event.data.options[0].name === "members") {
   if (population.rows[0] != null) {
     let commune = population.rows[0].fields.comm;
     let departement = population.rows[0].fields.dep;
-    bonus_message = `autant que la population de ${commune} (${departement})`;
+    bonus_message = `- autant que la population de ${commune} (${departement}) _[données INSEE Janvier 2019]_ -`;
   }
   ///bonus message END
   
   let messageResponse = await lib.discord.channels['@0.0.6'].messages.create({
     channel_id: `${context.params.event.channel_id}`,
     content: 
-    `<@!${context.params.event.member.user.id}> : nous sommes **${members_number}** membres - ${bonus_message} - dont **${active_members_number}** en ligne! Et 3 robots.`
+    `<@!${context.params.event.member.user.id}> : nous sommes **${members_number}** membres ${bonus_message} dont **${active_members_number}** en ligne! Et 8 robots.`
   });
   return messageResponse;
 }
